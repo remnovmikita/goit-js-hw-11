@@ -45,7 +45,7 @@ form.addEventListener("submit", async (event) => {
     });
   } finally {
     const elapsed = Date.now() - startTime; // сколько прошло
-    const delay = Math.max(0, 500 - elapsed); // если прошло меньше 0.5 сек — ждём остаток
+    const delay = Math.max(0, 400 - elapsed); // если прошло меньше 0.5 сек — ждём остаток
     setTimeout(() => {
       load.style.display = 'none';
     }, delay);
