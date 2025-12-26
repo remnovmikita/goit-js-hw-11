@@ -1,48 +1,38 @@
+
 const form = document.querySelector(".form");
 const input = document.querySelector('[name="search-text"]');
-const span = document.querySelector('.loader');
 
-// Описаний у документації
-import iziToast from "izitoast";
-// Додатковий імпорт стилів
-import "izitoast/dist/css/iziToast.min.css";
 
 // Import first function
-import { apiFuncs } from "./js/pixabay-api";
-import { photo } from "./js/render-functions";
-
-form.addEventListener("submit", even =>{
-    even.preventDefault();
-   const searcher = input.value.trim();
-   span.classList.add('show');
-    if(searcher === ""){
-        span.classList.remove("show");
-        iziToast.error({
-            title:'Eror',
-            message: 'Sorry, there are no images matching your search query. Please try again!'
-        });
-    }
-    else{
-        const gallarey = document.querySelector(".gallery");
-            gallarey.innerHTML = "";
-       apiFuncs(searcher)
-        .then(resp => {
-            setTimeout (() =>{
-            if (resp.data.total === 0){
-                span.classList.remove("show");
-             iziToast.error({
-            title:'Eror',
-            message: 'Sorry, there are no images matching your search query. Please try again!'
-            });
-            return;   
-            }
-                console.log(resp.data);
-                photo(resp.data.hits, gallarey);
-                span.classList.remove("show");
-            }, 2000);
-           
-              
-        })
-        .catch(error => console.log(error) )
-    }
+import { errorMessage } from "./js/render-functions";
+import { getImagesByQuery } from "./js/pixabay-api";
+import { createGallery } from "./js/render-functions";
+import { showLoader } from "./js/render-functions";
+import { hideLoader } from "./js/render-functions";
+import { clearGallery } from "./js/render-functions";
+form.addEventListener("submit", (event) =>{
+  event.preventDefault();
+  const search = input.value.trim();
+  showLoader();
+  clearGallery();
+  if(search === ""){
+    errorMessage("Невалидный ввод")
+  }else{
+    setTimeout(() =>{
+          hideLoader();
+          getImagesByQuery(search)
+      .then((data) => {
+      if(data.hits.length === 0){
+      errorMessage(
+        "Sorry, there are no images matching your search query. Please try again!");
+      }else{
+        createGallery(data.hits );
+      }
+      })
+      .catch((error) =>{
+        console.log(error);
+      })
+        }, 1000);
+   
+  }
 })

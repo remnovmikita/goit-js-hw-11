@@ -2,10 +2,14 @@
 import SimpleLightbox from "simplelightbox";
 // Додатковий імпорт стилів
 import "simplelightbox/dist/simple-lightbox.min.css";
-
-
-export function photo(hits, gallarey){
-    const li = hits
+// Описаний у документації
+const gallery = document.querySelector(".gallery");
+const span = document.querySelector(".loader");
+export const clearGallery = () => gallery.innerHTML = "";
+export const showLoader = () => span.classList.add("show");
+export const hideLoader = () => span.classList.remove('show');
+export function createGallery(images){
+    const li = images
                     .map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) =>
                     `<li class ="gallarey-item">
                     <a class = "gallery-link" href="${largeImageURL}">
@@ -24,7 +28,7 @@ export function photo(hits, gallarey){
                     </li>`
                 )
                     .join("");
-                gallarey.insertAdjacentHTML("afterbegin", li);
+                gallery.insertAdjacentHTML("afterbegin", li);
 
                 let lightbox = new SimpleLightbox('.gallery-link',{
         captionDelay : 250,
@@ -34,3 +38,15 @@ export function photo(hits, gallarey){
         lightbox.refresh();
 }
   
+
+import iziToast from "izitoast";
+// Додатковий імпорт стилів
+import "izitoast/dist/css/iziToast.min.css";
+
+export const errorMessage = (msg) =>{
+    iziToast.error({
+    title: 'Error',
+    position: 'topRight',
+    message: msg,
+});
+}
