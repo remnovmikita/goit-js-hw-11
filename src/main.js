@@ -10,29 +10,29 @@ import { createGallery } from "./js/render-functions";
 import { showLoader } from "./js/render-functions";
 import { hideLoader } from "./js/render-functions";
 import { clearGallery } from "./js/render-functions";
+
 form.addEventListener("submit", (event) =>{
   event.preventDefault();
   const search = input.value.trim();
-  showLoader();
   clearGallery();
   if(search === ""){
     errorMessage("Невалидный ввод")
+    return
   }else{
-    setTimeout(() =>{
-          hideLoader();
-          getImagesByQuery(search)
+      showLoader();
+      getImagesByQuery(search)
       .then((data) => {
       if(data.hits.length === 0){
-      errorMessage(
-        "Sorry, there are no images matching your search query. Please try again!");
+        errorMessage("Sorry, there are no images matching your search query. Please try again!");
       }else{
         createGallery(data.hits );
       }
+      hideLoader();
       })
       .catch((error) =>{
-        console.log(error);
+        hideLoader();
+        errorMessage("Sorry, there are no images matching your search query. Please try again!");
       })
-        }, 1000);
    
   }
 })
